@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}{{current_user.username}}'s Gallery{% endblock %}
+
+{% block head %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="static/css/gallery.css">
+
+{% endblock%}
+
+
+
+
+{%  block content %}
+<h1> {{current_user.username}}'s Gallery</h1>
+
+
+<div class="wrap" id="wrap"></div>
+<script  type="text/javascript">
+
+var photo_list = {{ photo_dicts|tojson }}
+
+function g(selector){
+    return selector.substring(0, 1) == '.' ? document.getElementsByClassName(selector.substring(1)) : document.getElementById(selector.substring(1));
+}
+
+function random(range){
+    var min = Math.min(range[0], range[1]);
+    var max = Math.max(range[0], range[1]);
+    var diff = max - min;
+    var number = Math.round(Math.random() * diff) + min;
+    return number;
+}
+
+function addPhotos(){
+    var _wrap = '';
+    var _nav = '';
+    for(var i = 0; i < photo_list.length; i++){
+        _wrap += '<div class="photo  photo_front" onclick="turn(this)" id="photo_' + (i + 1) + '"><div class="photo-wrap"><div class="side side-front">\
+        <p class="image"><img src="static/images/' + photo_list[i]['store_path'] + '"></p></div><div class="side side-back"><p class="desc">' + photo_list[i]['description'] + '</p></div></div></div></div>';
+        
+        _nav += '<span id="nav_' + (i + 1) + '" onclick="turn(g(\'#photo_' + (i + 1) + '\'))" class="i"></span>';
+    }
+    var navigation = '<div class="nav-button">' + _nav + '</div>'
+    g('#wrap').innerHTML = _wrap + navigation;
+    
+    rsort(random([1, photo_list.length]));
+}
+
+addPhotos();
+
+// calculate the range of left and right region 
+function range(){
+   
+    var range = {
+        left: { x: [], y: [] }, 
+        right: { x: [], y: [] }
+    };
+
+    var wrap = {
+        width: g('#wrap').clientWidth,
+        height: g('#wrap').clientHeight
+    };
+
+    var photo = {
+        width: g('.photo')[0].clientWidth,
+        height: g('.photo')[0].clientHeight
+    };
+
+    range.left.x = [0 - photo.width / 4 + 130, wrap.width / 2 - photo.width * 5 / 4 + 130];
+    range.left.y = [0 - photo.height / 4 + 160, wrap.height - photo.height * 3 / 4 + 160];
+    range.right.x = [wrap.width / 2 + photo.width / 4 + 130, wrap.width - photo.width / 4 + 130];
+    range.right.y = range.left.y;
+
+    return range;
+}
+
+//sort photos
+function rsort(n){
+    var _photo = g('.photo');
+    var photos = [];
+    for(var i = 0; i < _photo.length; i++){
+        _photo[i].className = 'photo photo_front';
+        //remove all styles before resort
+        _photo[i].style.left = '';
+        _photo[i].style.top = '';
+        _photo[i].style['transform'] = _photo[i].style['-webkit-transform'] = 'scale(1.3)';
+
+        photos.push(_photo[i]);
+    }
+    var photo_center = g('#photo_' + n);
+    photo_center.className += ' photo_center';
+
+    photo_center = photos.splice(n-1, 1);
+    var photos_left = photos.splice(0, Math.ceil(photos.length / 2));
+    var photos_right = photos;
+    var ranges = range();
+
+    for(var j = 0; j < photos_left.length; j++){
+        var photo = photos_left[j];
+        photo.style.left = random(ranges.left.x) + 'px';
+        photo.style.top = random(ranges.left.y) + 'px';
+        photo.style['transform'] = photo.style['-webkit-transform'] = 'rotate(' + random([-150, 150]) + 'deg) scale(1)';
+    }
+    for(var s = 0; s < photos_right.length; s++){
+        var photo = photos_right[s];
+        photo.style.left = random(ranges.right.x) + 'px';
+        photo.style.top = random(ranges.right.y) + 'px';
+        photo.style['transform'] = photo.style['-webkit-transform'] = 'rotate(' + random([-150, 150]) + 'deg) scale(1)';
+    }
+
+    // address control button
+    var navs = g('.i');
+    for(var k = 0; k < navs.length; k++){
+        navs[k].className = 'i';
+    }
+    g('#nav_' + n).className += ' i_current';
+}
+
+
+// turn over
+function turn(elem){
+    var cls = elem.className;
+    var n = elem.id.split('_')[1];
+    if(!/photo_center/.test(cls)){
+        return rsort(n);
+    }
+    if(/photo_front/.test(cls)){
+        cls = cls.replace(/photo_front/, 'photo_back');
+        g('#nav_' + n).className += ' i_back';
+    } else{
+        cls = cls.replace(/photo_back/, 'photo_front');
+        g('#nav_' + n).className = g('#nav_' + n).className.replace(/\s*i_back\s*/, ' ');
+    }
+
+    elem.className = cls;
+}
+
+
+
+</script>
+{% endblock content %}
+
