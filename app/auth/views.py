@@ -15,6 +15,15 @@ from .forms import LoginForm, RegistrationForm
 #             and request.endpoint[:5] != 'auth.' \
 #             and request.endpoint != 'static':
 #         return redirect(url_for('auth.unconfirmed'))
+# @auth.before_app_request
+# def before_request():
+#     if not current_user.is_authenticated \
+#             and request.endpoint[:5] != 'auth.' \
+#              and request.endpoint != 'static' \
+#              and ('logout' not in request.url_rule.rule):
+#         flash('Please Login First!')
+#         return redirect(url_for('auth.login'))
+
 
 
 @auth.route('/unconfirmed')
@@ -26,6 +35,7 @@ def unconfirmed():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    print request.url_rule.rule
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()

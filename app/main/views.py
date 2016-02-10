@@ -1,6 +1,6 @@
 import os
 from flask import render_template, request, redirect, url_for, jsonify
-from flask.ext.login import current_user
+from flask.ext.login import current_user, login_required
 from werkzeug.utils import secure_filename
 from . import main
 from manage import app
@@ -59,7 +59,10 @@ def test():
         filename = None
     return render_template('test.html', form= form, filename = filename)
 
+
+
 @main.route('/upload', methods = ['GET', 'POST'])
+@login_required
 def upload():
     form = PhotoForm()
     if request.method == 'POST':
@@ -84,6 +87,7 @@ def upload():
 
 
 @main.route('/gallery', methods = ['GET'])
+@login_required
 def gallery():
     photos = db.session.query(Photo).filter_by(user_id = current_user.id).all()
     #temp = db.session.query(Photo).filter_by(user_id = current_user.id).first()
