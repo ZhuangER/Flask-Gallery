@@ -8,10 +8,6 @@ from .forms import PhotoForm
 from ..models import Photo
 from .. import db
 
-# ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-
-
 
 @main.route('/')
 def index():
