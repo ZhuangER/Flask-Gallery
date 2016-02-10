@@ -8,7 +8,7 @@ from .forms import PhotoForm
 from ..models import Photo
 from .. import db
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+# ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 
 
@@ -17,8 +17,8 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 def index():
     return render_template('index.html')
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+# def allowed_file(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 # @main.route('/test', methods = ['GET', 'POST'])
 # def test():
@@ -96,3 +96,21 @@ def gallery():
     #return render_template('gallery.html', photo_items = jsonify(PhotoItems=[i.to_json for i in photos]))
     #return jsonify(PhotoItems=[i.to_json for i in photos])
     return render_template('gallery.html', photo_dicts = [i.to_json for i in photos])
+
+
+@main.route('/profile',methods = ['GET', 'POST'])
+@login_required
+def profile():
+    photos = db.session.query(Photo).filter_by(user_id = current_user.id).all()
+    photo_dicts = [i.to_json for i in photos]
+    for photo in photo_dicts:
+        photo['store_path'] = 'static/images/' + photo['store_path']
+    return render_template('profile.html', photo_dicts = photo_dicts)
+
+@main.route('/delete/<path:file_path>', methods = ['GET', 'POST'])
+@login_required
+def delete(file_path):
+    #print file_path
+    #return 'delete ' + file_path
+    print type(file_path)
+    return render_template('delete.html', filepath=file_path)

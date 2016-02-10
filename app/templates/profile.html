@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{current_user.username}}'s Profile{% endblock %}
+
+{% block content %}
+<p>TODO</p>
+
+
+
+{% for photos in photo_dicts %}
+<div style="float:left">
+	<a href='#'> 
+		<img src={{photos['store_path']}} width= "300"
+                vertical-align= "middle">
+        <br/>
+        <a href = "{{ url_for('main.delete', file_path=photos['store_path']) }}"> Delete</a>
+        <br/>
+        <!-- <form action=""
+        	method=post
+        	enctype=multipart/form-data>
+        	<input type=submit value=Delete>
+        </form> -->
+	</a>
+</div>
+
+{% endfor %}
+
+{% endblock content %}
