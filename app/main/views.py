@@ -112,5 +112,13 @@ def profile():
 def delete(file_path):
     #print file_path
     #return 'delete ' + file_path
-    print type(file_path)
+    print ' ' + file_path
+    deleteItem = db.session.query(Photo).filter_by(store_path=file_path).first()
+    print deleteItem
+    if request.method == 'POST':
+        if deleteItem != None:
+            db.session.delete(deleteItem)
+            db.session.commit()
+            flash('The photo has been removed!')
+            return redirect(url_for('main.profile'))
     return render_template('delete.html', filepath=file_path)
