@@ -39,8 +39,9 @@ def allowed_file(filename):
 
 
 
-@main.route('/test', methods = ['GET', 'POST'])
-def test():
+@main.route('/upload', methods = ['GET', 'POST'])
+@login_required
+def upload():
     form = PhotoForm()
     if form.validate_on_submit():
         filename = secure_filename(form.photo.data.filename)
@@ -49,40 +50,41 @@ def test():
                         description = form.description.data)
         db.session.add(photo)
         db.session.commit()
+        
         if current_user.is_authenticated:
             userFolder = os.path.join(app.config['UPLOAD_FOLDER'], current_user.username)
             if not os.path.exists(userFolder):
                     os.mkdir(userFolder)
             form.photo.data.save(app.config['UPLOAD_FOLDER']+ '/' + current_user.username + '/' + filename)
-            return redirect(url_for('main.test'))
+            return redirect(url_for('main.upload'))
     else:
         filename = None
-    return render_template('test.html', form= form, filename = filename)
+    return render_template('upload.html', form= form, filename = filename)
 
 
 
-@main.route('/upload', methods = ['GET', 'POST'])
-@login_required
-def upload():
-    form = PhotoForm()
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            # store data to the database
-            photo = Photo(store_path = os.path.join(current_user.username,filename), 
-                        user_id = current_user.id, 
-                        description = form.description.data)
-            db.session.add(photo)
-            db.session.commit()
+# @main.route('/upload', methods = ['GET', 'POST'])
+# @login_required
+# def upload():
+#     form = PhotoForm()
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             # store data to the database
+#             photo = Photo(store_path = os.path.join(current_user.username,filename), 
+#                         user_id = current_user.id, 
+#                         description = form.description.data)
+#             db.session.add(photo)
+#             db.session.commit()
             
-            if current_user.is_authenticated:
-                userFolder = os.path.join(app.config['UPLOAD_FOLDER'], current_user.username)
-                if not os.path.exists(userFolder):
-                    os.mkdir(userFolder)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], current_user.username,filename))
-                return redirect(url_for('main.upload'))
-    return render_template('upload.html', form = form)
+#             if current_user.is_authenticated:
+#                 userFolder = os.path.join(app.config['UPLOAD_FOLDER'], current_user.username)
+#                 if not os.path.exists(userFolder):
+#                     os.mkdir(userFolder)
+#                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], current_user.username,filename))
+#                 return redirect(url_for('main.upload'))
+#     return render_template('upload.html', form = form)
 
 
 

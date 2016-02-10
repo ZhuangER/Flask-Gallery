@@ -11,20 +11,11 @@
     <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
 </div>
     <h1>Upload Images</h1>
-    <p> Please only submit 'png', 'jpg', 'jpeg', 'gif' format files</p>
+    <p> Please only submit ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp') format files</p>
 </div>
 
 <div class="col-md-4">
 	{{ wtf.quick_form(form) }}
-	<form action=""
-		method=post
-		enctype=multipart/form-data>
-		<p>
-			<input type=file name=file>
-			<input type=submit value=Upload>
-		</p>
-	</form>
-	<br/>
 	<p>New user? <a href="{{ url_for('auth.register') }}">Click here to register</a>.</p>
 </div>
 {% endblock %}

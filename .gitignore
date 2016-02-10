@@ -42,4 +42,4 @@ nosetests.xml
 venv
 
 # images
-app/static/images/*
+app/static/images/*/
