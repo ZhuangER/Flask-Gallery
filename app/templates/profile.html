@@ -2,23 +2,26 @@
 
 {% block title %}{{current_user.username}}'s Profile{% endblock %}
 
+
+{% block head %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="static/css/profile.css">
+{% endblock%}
+
 {% block content %}
 
-
 {% for photo in photo_dicts %}
-<div style="float:left">
-	<a href='#'> 
-		<img src={{photo['store_path']}} width= "300"
-                vertical-align= "middle">
-        <br/>
-        <a href = "{{ url_for('main.delete', filename=photo['filename']) }}"> Delete</a>
-        <br/>
-        <!-- <form action=""
-        	method=post
-        	enctype=multipart/form-data>
-        	<input type=submit value=Delete>
-        </form> -->
-	</a>
+
+<div class="photo-wrap">
+	<div class="photos">
+		<a href='#'> 
+			<img src={{photo['store_path']}} >
+	        <br/>
+	        
+		</a>
+	</div>
+	<a href = "{{ url_for('main.delete', filename=photo['filename']) }}"> Delete</a>
+	        <br/>
 </div>
 
 {% endfor %}

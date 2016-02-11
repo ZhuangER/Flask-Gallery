@@ -1,0 +1,16 @@
+.photo-wrap{
+	text-align: center;
+	width:220px;
+	height:210px;
+	float:left;
+
+}
+.photos{
+	overflow:hidden;
+	width: 90%;
+	height: 90%;
+}
+.photos img{
+	width: 200px;
+	vertical-align: middle;
+}
