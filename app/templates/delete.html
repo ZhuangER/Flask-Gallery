@@ -3,14 +3,12 @@
 {% block title %}Gallery{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
-</div>
 
-<p>Are you sure you want to delete photo? </p>
+<h2>Are you sure you want to delete photo {{filename}}? </h2>
+<br/>
 <div>
 	<a href="#">
-	<img src={{ filepath }} width= "300" vertical-align= "middle">
+	<img src= {{ file_path }} width= "300" vertical-align= "middle">
 	</a>
 	<form action=""
         	method=post

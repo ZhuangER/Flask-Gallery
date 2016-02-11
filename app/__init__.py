@@ -2,7 +2,6 @@ import os
 from os import path
 from flask import Flask
 from flask.ext.bootstrap import Bootstrap
-from flask.ext.mail import Mail
 from flask.ext.moment import Moment
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
@@ -10,7 +9,6 @@ from config import config
 from flask.ext.uploads import patch_request_class
 
 bootstrap = Bootstrap()
-mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 
@@ -31,10 +29,8 @@ def create_app(config_name):
 
     UPLOAD_FOLDER = os.path.join(basedir, 'static/images')
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    #patch_request_class(app)
 
     bootstrap.init_app(app)
-    mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)

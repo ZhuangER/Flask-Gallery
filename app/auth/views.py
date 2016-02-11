@@ -4,11 +4,14 @@ from flask.ext.login import login_user, logout_user, login_required, \
 from . import auth
 from .. import db
 from ..models import User
-from ..email import send_email
 from .forms import LoginForm, RegistrationForm
 
 
 
+
+"""
+    User Login
+"""
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     print request.url_rule.rule
@@ -22,6 +25,9 @@ def login():
     return render_template('auth/login.html', form=form)
 
 
+"""
+    User Logout
+"""
 @auth.route('/logout')
 @login_required
 def logout():
@@ -30,6 +36,9 @@ def logout():
     return redirect(url_for('main.index'))
 
 
+"""
+    User Register
+"""
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()

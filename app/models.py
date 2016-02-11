@@ -18,11 +18,10 @@ class Role(db.Model):
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(64), unique=True)
     username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
-    confirmed = db.Column(db.Boolean, default=False)
 
     @property
     def password(self):
@@ -35,28 +34,13 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_confirmation_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'confirm': self.id})
-
-    def confirm(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return False
-        if data.get('confirm') != self.id:
-            return False
-        self.confirmed = True
-        db.session.add(self)
-        return True
-
     def __repr__(self):
         return '<User %r>' % self.username
 
 class Photo(db.Model):
     __tablename__ = 'photo'
     id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(256), unique=True)
     store_path = db.Column(db.String(64), unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.username'))
     description = db.Column(db.String(256))
@@ -64,6 +48,7 @@ class Photo(db.Model):
     @property
     def to_json(self):
         json_photo = {
+            'filename' : self.filename,
             'description' : self.description,
             'id' : self.id,
             'user_id' : self.user_id,
