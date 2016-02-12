@@ -26,7 +26,20 @@ db.create_all()
 
 
 ##Structure
+manage.py: provide commands like 'shell' and 'runserver'
+config.py: configuration file
+requirements.txt: dependency libraries
+app folder: contain main source code
+- auth: sub-module for authentication
+- main: sub-module for main functions
+- templates: html file
+- static: js, css files and store images
+- __init__.py: initialize the application
+- models.py: database related information
 
+Each sub-module contains itself's __init__.py, views.py and forms.py
+- views.py: connect back-end route functions to the front-end html file 
+- forms.py: provide information for flask-wtf (a form extension)
 
 
 
